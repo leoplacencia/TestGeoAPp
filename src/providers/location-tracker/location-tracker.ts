@@ -3,6 +3,7 @@ import {BackgroundGeolocation, BackgroundGeolocationConfig} from '@ionic-native/
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
+import { Http, Headers } from '@angular/http';
 
 
 @Injectable()
@@ -11,12 +12,14 @@ export class LocationTrackerProvider {
   public watch: any;
   public lat: number = 0;
   public lng: number = 0;
+  
 
 
   constructor(
     public zone: NgZone,
     public backgroundGeolocation: BackgroundGeolocation,
-    public geolocation: Geolocation
+    public geolocation: Geolocation,
+    public http: Http
   ) {
 
   }
@@ -54,6 +57,19 @@ export class LocationTrackerProvider {
 
     this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
       console.log(position);
+
+
+      // Post
+      let headers = new Headers();
+      let latLng = {lat: position.coords.latitude, lng: position.coords.longitude};
+      headers.append('Content-Type', 'application/json');
+      this.http.post('http://localhost:8080/api/test', JSON.stringify(latLng), {headers: headers})
+        .map(res => res.json())
+        .subscribe(data => {
+          console.log(data);
+      });
+
+
 
       this.zone.run(() => {
         this.lat = position.coords.latitude;
