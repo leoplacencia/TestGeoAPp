@@ -10,8 +10,8 @@ import { Http, Headers } from '@angular/http';
 export class LocationTrackerProvider {
 
   public watch: any;
-  public lat: number = 0;
-  public lng: number = 0;
+  public lat: any;
+  public lng: any;
   
 
 
@@ -30,7 +30,7 @@ export class LocationTrackerProvider {
       desiredAccuracy: 0,
       stationaryRadius: 20,
       distanceFilter: 10,
-      debug: true,
+      debug: false,
       interval: 2000
     };
 
@@ -57,24 +57,23 @@ export class LocationTrackerProvider {
 
     this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
       console.log(position);
-
-
-      // Post
-      let headers = new Headers();
-      let latLng = {lat: position.coords.latitude, lng: position.coords.longitude};
-      headers.append('Content-Type', 'application/json');
-      this.http.post('http://localhost:8080/api/test', JSON.stringify(latLng), {headers: headers})
-        .map(res => res.json())
-        .subscribe(data => {
-          console.log(data);
-      });
-
-
-
       this.zone.run(() => {
+        this.sendPost(position);
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
       });
+    });
+  }
+
+  sendPost(position){
+     // Post
+    let headers = new Headers();
+    let latLng = {lat: position.coords.latitude, lng: position.coords.longitude};
+    headers.append('Content-Type', 'application/json');
+    this.http.post('http://localhost:8080/api/test', JSON.stringify(latLng), {headers: headers})
+      .map(res => res.json())
+      .subscribe(data => {
+        console.log(data);
     });
   }
 
