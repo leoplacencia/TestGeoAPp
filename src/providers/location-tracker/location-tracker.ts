@@ -12,6 +12,7 @@ export class LocationTrackerProvider {
   public watch: any;
   public lat: any;
   public lng: any;
+  test: boolean = true;
   
 
 
@@ -30,13 +31,16 @@ export class LocationTrackerProvider {
       desiredAccuracy: 0,
       stationaryRadius: 20,
       distanceFilter: 10,
-      debug: false,
+      debug: true,
       interval: 2000
     };
 
     this.backgroundGeolocation.configure(config).subscribe((location) => {
-
-      console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);
+    
+      if (this.test){
+        console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);
+      };
+      
 
       // Update inside of Angular's zone
       this.zone.run(() => {
@@ -56,7 +60,10 @@ export class LocationTrackerProvider {
     };
 
     this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
-      console.log(position);
+      if (this.test){
+        console.log(position);
+      };
+      
       this.zone.run(() => {
         this.sendPost(position);
         this.lat = position.coords.latitude;
@@ -73,13 +80,16 @@ export class LocationTrackerProvider {
     this.http.post('http://localhost:8080/api/test', JSON.stringify(latLng), {headers: headers})
       .map(res => res.json())
       .subscribe(data => {
-        console.log(data);
+        if (this.test){
+          console.log(data);
+        };
     });
   }
 
   public stopTracking() {
-    console.log('stopTracking');
-
+    if (this.test){
+      console.log('stopTracking');
+    };
     this.backgroundGeolocation.finish();
     this.watch.unsubscribe();
   }

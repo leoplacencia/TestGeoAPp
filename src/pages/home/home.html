@@ -1,7 +1,7 @@
 <ion-header>
     <ion-navbar color="primary">
         <ion-title>
-            Background Position
+            Geolocalizador
         </ion-title>
         <ion-buttons end>
             <button ion-button icon-only (click)="start()">
@@ -16,9 +16,9 @@
 
 <ion-content>
 
-    <div text-center>
-        <h3>Latitude actual: {{ locationTracker.lat}}</h3>
+    <div margin-left>
+        <h3>Latitude actual: {{ locationTracker.lat | number}}</h3>
 
-        <h3>Longitude actual: {{ locationTracker.lng}}</h3>
+        <h3>Longitude actual: {{ locationTracker.lng | number}}</h3>
     </div>
 </ion-content>
