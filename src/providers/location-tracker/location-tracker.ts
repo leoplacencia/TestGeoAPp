@@ -3,7 +3,8 @@ import {BackgroundGeolocation, BackgroundGeolocationConfig} from '@ionic-native/
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
-import { Http, Headers } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
+
 
 
 @Injectable()
@@ -21,9 +22,9 @@ export class LocationTrackerProvider {
     public backgroundGeolocation: BackgroundGeolocation,
     public geolocation: Geolocation,
     public http: Http
-  ) {
+    ) { 
 
-  }
+   }
 
   public startTracking() {
 
@@ -75,17 +76,56 @@ export class LocationTrackerProvider {
   sendPost(position){
      // Post
     let headers = new Headers();
-    let latLng = {lat: position.coords.latitude, lng: position.coords.longitude};
+    // let latLng = {lat: position.coords.latitude, lng: position.coords.longitude};
+    let latLng = position.coords.latitude + ' '+ position.coords.longitude;
+    //
     headers.append('Content-Type', 'application/json');
-    this.http.post('http://localhost:8080/api/test', JSON.stringify(latLng), {headers: headers})
-      .map(res => res.json())
-      .subscribe(data => {
-        if (this.test){
-          console.log(data);
-        };
-    });
-  }
+    headers.append('Access-Control-Allow-Origin', '*');
+    let sendUrl = 'http://192.168.43.167:3001/save_coordinates';
+    let authUrl = 'http://192.168.43.167:3001/users/sign_in';
+    let user = {
+      email: 'secheverria@moldeable.com',
+      password: 'molde1313'
+    };
+    // console.log(JSON.stringify(user));
 
+
+    this.http.post(authUrl, JSON.stringify(user),  new RequestOptions({headers: headers}) )
+    .map(res => res.json())
+    .subscribe(data => {
+      if (this.test){
+        console.log(data);
+      };
+    });
+
+    /*
+    this.http.post(sendUrl, JSON.stringify(latLng), {headers: headers})
+    .map(res => res.json())
+    .subscribe(data => {
+      if (this.test){
+        console.log(data);
+      };
+    });*/
+
+
+
+
+    // this.http.post("//192.168.43.167:3001/save_coordinates", JSON.stringify(latLng), new RequestOptions({ headers: headers }))
+    // .map(res => res.json());
+    
+    // this.http.post('http://192.168.43.167:3001/save_coordinates', latLng, {headers: headers})
+      
+    //   .subscribe();
+
+    // this.http.post('http://192.168.43.167:3001/save_coordinates', latLng, {headers: headers})
+      
+    //   .subscribe(data => {
+    //     if (this.test){
+    //       console.log(data);
+    //     };
+    // });
+    //  }
+  }
   public stopTracking() {
     if (this.test){
       console.log('stopTracking');

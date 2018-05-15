@@ -10,7 +10,7 @@ import {LocationTrackerProvider} from "../../providers/location-tracker/location
 export class HomePage {
 
   constructor(public navCtrl: NavController, public locationTracker: LocationTrackerProvider) {
-
+  
   }
   public start() {
     this.locationTracker.startTracking();
@@ -19,5 +19,4 @@ export class HomePage {
   public stop() {
     this.locationTracker.stopTracking();
   }
-
 }

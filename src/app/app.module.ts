@@ -11,6 +11,7 @@ import {BackgroundGeolocation} from "@ionic-native/background-geolocation";
 import { Geolocation } from '@ionic-native/geolocation';
 import { HttpModule } from '@angular/http';
 
+
 @NgModule({
   declarations: [
     MyApp,
@@ -27,6 +28,7 @@ import { HttpModule } from '@angular/http';
     HomePage
   ],
   providers: [
+
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
