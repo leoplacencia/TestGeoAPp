@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { LocationTrackerProvider } from '../../providers/location-tracker/location-tracker';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
-
+import { BackgroundMode } from '@ionic-native/background-mode';
 
 
 declare var google;
@@ -18,7 +18,8 @@ export class HomePage {
   watch: any;
   
 
-  constructor(public navCtrl: NavController, public geolocation: Geolocation, public locationTracker: LocationTrackerProvider) {
+  constructor(public navCtrl: NavController, public geolocation: Geolocation, public locationTracker: LocationTrackerProvider,
+    public backgroundMode: BackgroundMode) {
   
     
 
@@ -28,9 +29,12 @@ export class HomePage {
     this.getPosition();
   }
   public start() {
-    
+    this.backgroundMode.enable();
+    this.backgroundMode.on("activate").subscribe(()=>{
+      this.locationTracker.startTracking(); 
+    });
     // Start Provider background location
-    this.locationTracker.startTracking();
+    // this.locationTracker.startTracking();
     // Cambia el marker del mapa
     this.watch = this.geolocation.watchPosition().subscribe(res =>{
       this.setMyMap(this.locationTracker,this.map,this.marker);
@@ -46,6 +50,7 @@ export class HomePage {
     // Detiene el cambio de markers
     this.watch.unsubscribe();
     console.log('Stop watch');
+    this.backgroundMode.disable();
     
   }
 
