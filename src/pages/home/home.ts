@@ -8,9 +8,10 @@ import {LocationTrackerProvider} from "../../providers/location-tracker/location
   templateUrl: 'home.html'
 })
 export class HomePage {
+  lt: LocationTrackerProvider;
 
   constructor(public navCtrl: NavController, public locationTracker: LocationTrackerProvider) {
-  
+    this.lt = this.locationTracker;
   }
   public start() {
     this.locationTracker.startTracking();

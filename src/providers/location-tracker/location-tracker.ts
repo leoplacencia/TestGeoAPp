@@ -66,7 +66,7 @@ export class LocationTrackerProvider {
       };
       
       this.zone.run(() => {
-        this.sendPost(position);
+        // this.sendPost(position);
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
       });
