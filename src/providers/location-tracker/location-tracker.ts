@@ -4,6 +4,7 @@ import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import { BackgroundMode } from '@ionic-native/background-mode';
 
 
 
@@ -21,13 +22,15 @@ export class LocationTrackerProvider {
     public zone: NgZone,
     public backgroundGeolocation: BackgroundGeolocation,
     public geolocation: Geolocation,
-    public http: Http
+    public http: Http,
+    public backgroundMode: BackgroundMode
     ) { 
 
    }
 
   public startTracking() {
 
+    this.backgroundMode.enable();
     let config : BackgroundGeolocationConfig = {
       desiredAccuracy: 0,
       stationaryRadius: 20,
@@ -135,5 +138,6 @@ export class LocationTrackerProvider {
     };
     this.backgroundGeolocation.finish();
     this.watch.unsubscribe();
+    this.backgroundMode.disable();
   }
 }
