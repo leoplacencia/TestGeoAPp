@@ -41,7 +41,7 @@ export class LocationTrackerProvider {
       if (this.test){
         console.log('BackgroundGeolocation:  ' + location.latitude + ',' + location.longitude);
       };
-      
+      this.sendPost(location);
 
       // Asigna coords para ser leidas
       this.zone.run(() => {
@@ -66,7 +66,7 @@ export class LocationTrackerProvider {
       };
       
       this.zone.run(() => {
-        this.sendPost(position);
+        
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
       });
@@ -78,7 +78,7 @@ export class LocationTrackerProvider {
     let headers = new Headers();
     // 
     
-    let latLng = {lat: position.coords.latitude, lng: position.coords.longitude};
+    let latLng = {lat: position.latitude, lng: position.longitude};
     //let latLng = position.coords.latitude + ' '+ position.coords.longitude;
     //
     headers.append('Content-Type', 'application/json');
