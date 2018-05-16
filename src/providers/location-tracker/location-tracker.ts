@@ -43,7 +43,7 @@ export class LocationTrackerProvider {
       };
       
 
-      // Update inside of Angular's zone
+      // Asigna coords para ser leidas
       this.zone.run(() => {
         this.lat = location.latitude;
         this.lng = location.longitude;
@@ -54,7 +54,7 @@ export class LocationTrackerProvider {
 
     this.backgroundGeolocation.start();
 
-    // Background tracking
+    // Background coords
     let options = {
       frequency: 3000,
       enableHighAccuracy: true
@@ -66,7 +66,7 @@ export class LocationTrackerProvider {
       };
       
       this.zone.run(() => {
-        // this.sendPost(position);
+        this.sendPost(position);
         this.lat = position.coords.latitude;
         this.lng = position.coords.longitude;
       });
@@ -76,13 +76,16 @@ export class LocationTrackerProvider {
   sendPost(position){
      // Post
     let headers = new Headers();
-    // let latLng = {lat: position.coords.latitude, lng: position.coords.longitude};
-    let latLng = position.coords.latitude + ' '+ position.coords.longitude;
+    // 
+    
+    let latLng = {lat: position.coords.latitude, lng: position.coords.longitude};
+    //let latLng = position.coords.latitude + ' '+ position.coords.longitude;
     //
     headers.append('Content-Type', 'application/json');
     headers.append('Access-Control-Allow-Origin', '*');
     let sendUrl = 'http://192.168.43.167:3001/save_coordinates';
     let authUrl = 'http://192.168.43.167:3001/users/sign_in';
+    let testUrl = 'http://192.168.100.140:8080/api/test'
     let user = {
       email: 'secheverria@moldeable.com',
       password: 'molde1313'
@@ -90,7 +93,7 @@ export class LocationTrackerProvider {
     // console.log(JSON.stringify(user));
 
 
-    this.http.post(authUrl, JSON.stringify(user),  new RequestOptions({headers: headers}) )
+    this.http.post(testUrl, JSON.stringify(latLng),  new RequestOptions({headers: headers}) )
     .map(res => res.json())
     .subscribe(data => {
       if (this.test){

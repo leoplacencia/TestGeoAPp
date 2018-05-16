@@ -22,28 +22,32 @@ export class HomePage {
     
 
   }
+  ionViewDidLoad(){
+    // Inicializa el mapa
+    this.getPosition();
+  }
   public start() {
+    // Start Provider background location
     this.locationTracker.startTracking();
+    // Cambia el marker del mapa
     this.watch = this.geolocation.watchPosition().subscribe(res =>{
       this.setMyMap(this.locationTracker,this.map,this.marker);
-      console.log('Cambia marker');
+      console.log('Cambió marker');
     });
 
     
   }
 
   public stop() {
+    // Detiene el provider
     this.locationTracker.stopTracking();
+    // Detiene el cambio de markers
     this.watch.unsubscribe();
     console.log('Stop watch');
     
   }
 
-  ionViewDidLoad(){
-    this.getPosition();
-     
   
-  }
   getPosition():any{
     this.geolocation.getCurrentPosition().then(response => {  
         this.loadMap(response); 
@@ -55,26 +59,27 @@ export class HomePage {
   loadMap(position: Geoposition){
     let latitude = position.coords.latitude;
     let longitude = position.coords.longitude;
-    // console.log(latitude, longitude);
     
-    // create a new map by passing HTMLElement
+    
+    // Se asigna el elemento donde irá el mapa
     let mapEle: HTMLElement = document.getElementById('map');
   
-    // create LatLng object
+    // Se establecen cordenadas
     let myLatLng = {lat: latitude, lng: longitude};
   
-  // create map
+  // Crea el mapa
   this.map = new google.maps.Map(mapEle, {
     center: myLatLng,
     zoom: 17
   });
   
+  // Agrega el marker
   google.maps.event.addListenerOnce(this.map, 'idle', () => {
        this.marker = new google.maps.Marker({
         position: myLatLng,
         map: this.map
       });
-      // console.log(myLatLng);
+      
     
     
     mapEle.classList.add('show-map');
@@ -82,9 +87,10 @@ export class HomePage {
   }
 
   setMyMap(res: LocationTrackerProvider, map, marker) {
+    // Establece coords desde el provider
     let myLatLng = {lat: res.lat, lng: res.lng};
+    // Si hay un marker lo elimina para crear otro
     if (marker) {
-      // console.log('setnullmap:'+marker)
       marker.setMap(null);
       this.marker = new google.maps.Marker({
         position: myLatLng,
@@ -92,6 +98,7 @@ export class HomePage {
       });
     }
     
+    // Centra el mapa y da coordenadas
     map.setCenter(myLatLng);
     map.panTo(myLatLng);
      console.log('marker cambiado a :'+ myLatLng.lat + ' ' + myLatLng.lng);
