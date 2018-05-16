@@ -3,8 +3,7 @@ import {BackgroundGeolocation, BackgroundGeolocationConfig} from '@ionic-native/
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
-import { Http, Headers, RequestOptions } from '@angular/http';
-import { BackgroundMode } from '@ionic-native/background-mode';
+
 
 
 
@@ -21,16 +20,14 @@ export class LocationTrackerProvider {
   constructor(
     public zone: NgZone,
     public backgroundGeolocation: BackgroundGeolocation,
-    public geolocation: Geolocation,
-    public http: Http,
-    public backgroundMode: BackgroundMode
+    public geolocation: Geolocation
     ) { 
 
    }
 
   public startTracking() {
 
-    this.backgroundMode.enable();
+    
     let config : BackgroundGeolocationConfig = {
       desiredAccuracy: 0,
       stationaryRadius: 20,
@@ -67,7 +64,7 @@ export class LocationTrackerProvider {
       if (this.test){
         console.log(position);
       };
-      this.sendPost(position);
+      //this.sendPost(position);
       this.zone.run(() => {
         
         this.lat = position.coords.latitude;
@@ -76,68 +73,13 @@ export class LocationTrackerProvider {
     });
   }
 
-  sendPost(position){
-     // Post
-    let headers = new Headers();
-    // 
-    
-    let latLng = {lat: position.coords.latitude, lng: position.coords.longitude};
-    //let latLng = position.coords.latitude + ' '+ position.coords.longitude;
-    //
-    headers.append('Content-Type', 'application/json');
-    headers.append('Access-Control-Allow-Origin', '*');
-    let sendUrl = 'http://192.168.43.167:3001/save_coordinates';
-    let authUrl = 'http://192.168.43.167:3001/users/sign_in';
-    let testUrl = 'http://192.168.100.140:8080/api/test'
-    let user = {
-      email: 'secheverria@moldeable.com',
-      password: 'molde1313'
-    };
-    // console.log(JSON.stringify(user));
-
-
-    this.http.post(testUrl, JSON.stringify(latLng),  new RequestOptions({headers: headers}) )
-    .map(res => res.json())
-    .subscribe(data => {
-      if (this.test){
-        console.log(data);
-      };
-    });
-
-    /*
-    this.http.post(sendUrl, JSON.stringify(latLng), {headers: headers})
-    .map(res => res.json())
-    .subscribe(data => {
-      if (this.test){
-        console.log(data);
-      };
-    });*/
-
-
-
-
-    // this.http.post("//192.168.43.167:3001/save_coordinates", JSON.stringify(latLng), new RequestOptions({ headers: headers }))
-    // .map(res => res.json());
-    
-    // this.http.post('http://192.168.43.167:3001/save_coordinates', latLng, {headers: headers})
-      
-    //   .subscribe();
-
-    // this.http.post('http://192.168.43.167:3001/save_coordinates', latLng, {headers: headers})
-      
-    //   .subscribe(data => {
-    //     if (this.test){
-    //       console.log(data);
-    //     };
-    // });
-    //  }
-  }
+  
   public stopTracking() {
     if (this.test){
       console.log('stopTracking');
     };
     this.backgroundGeolocation.finish();
     this.watch.unsubscribe();
-    this.backgroundMode.disable();
+    
   }
 }

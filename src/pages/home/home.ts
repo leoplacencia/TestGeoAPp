@@ -3,6 +3,7 @@ import { NavController } from 'ionic-angular';
 import { LocationTrackerProvider } from '../../providers/location-tracker/location-tracker';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation';
 import { BackgroundMode } from '@ionic-native/background-mode';
+import { Http, Headers, RequestOptions } from '@angular/http';
 
 
 declare var google;
@@ -19,7 +20,8 @@ export class HomePage {
   
 
   constructor(public navCtrl: NavController, public geolocation: Geolocation, public locationTracker: LocationTrackerProvider,
-    public backgroundMode: BackgroundMode) {
+    public backgroundMode: BackgroundMode,
+    public http: Http) {
   
     
 
@@ -29,18 +31,25 @@ export class HomePage {
     this.getPosition();
   }
   public start() {
-    this.backgroundMode.enable();
-    this.backgroundMode.on("activate").subscribe(()=>{
-      this.locationTracker.startTracking(); 
-    });
+    
+    this.locationTracker.startTracking(); 
+    
     // Start Provider background location
     // this.locationTracker.startTracking();
     // Cambia el marker del mapa
+    this.backgroundMode.on('activate').subscribe(() => {
+      this.watch = this.geolocation.watchPosition().subscribe(res =>{
+        
+        this.sendPost(res)
+        console.log('Segundo plano');
+      });
+    });
     this.watch = this.geolocation.watchPosition().subscribe(res =>{
       this.setMyMap(this.locationTracker,this.map,this.marker);
+      this.sendPost(res)
       console.log('Cambió marker');
     });
-
+    this.backgroundMode.enable();
     
   }
 
@@ -113,4 +122,64 @@ export class HomePage {
     // this.sendCoords(latLng);
  
   }
+
+
+
+
+
+  sendPost(res){
+    // Post
+   let headers = new Headers();
+   // 
+   
+   let latLng = {lat: res.lat, lng: res.lng};
+   //let latLng = position.coords.latitude + ' '+ position.coords.longitude;
+   //
+   headers.append('Content-Type', 'application/json');
+   headers.append('Access-Control-Allow-Origin', '*');
+   let sendUrl = 'http://192.168.43.167:3001/save_coordinates';
+   let authUrl = 'http://192.168.43.167:3001/users/sign_in';
+   let testUrl = 'http://192.168.100.140:8080/api/test'
+   let user = {
+     email: 'secheverria@moldeable.com',
+     password: 'molde1313'
+   };
+   // console.log(JSON.stringify(user));
+
+
+   this.http.post(testUrl, JSON.stringify(latLng),  new RequestOptions({headers: headers}) )
+   .map(res => res.json())
+   .subscribe(data => {
+    console.log(data);
+     
+   });
+
+   /*
+   this.http.post(sendUrl, JSON.stringify(latLng), {headers: headers})
+   .map(res => res.json())
+   .subscribe(data => {
+     if (this.test){
+       console.log(data);
+     };
+   });*/
+
+
+
+
+   // this.http.post("//192.168.43.167:3001/save_coordinates", JSON.stringify(latLng), new RequestOptions({ headers: headers }))
+   // .map(res => res.json());
+   
+   // this.http.post('http://192.168.43.167:3001/save_coordinates', latLng, {headers: headers})
+     
+   //   .subscribe();
+
+   // this.http.post('http://192.168.43.167:3001/save_coordinates', latLng, {headers: headers})
+     
+   //   .subscribe(data => {
+   //     if (this.test){
+   //       console.log(data);
+   //     };
+   // });
+   //  }
+ }
 }
