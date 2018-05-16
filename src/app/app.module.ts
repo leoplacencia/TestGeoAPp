@@ -34,7 +34,7 @@ import { HttpModule } from '@angular/http';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     LocationTrackerProvider,
     BackgroundGeolocation,
-    Geolocation
+    Geolocation,
   ]
 })
 export class AppModule {}
