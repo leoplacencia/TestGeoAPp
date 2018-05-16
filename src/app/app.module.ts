@@ -11,6 +11,8 @@ import {BackgroundGeolocation} from "@ionic-native/background-geolocation";
 import { Geolocation } from '@ionic-native/geolocation';
 import { HttpModule } from '@angular/http';
 
+import { BackgroundMode } from '@ionic-native/background-mode';
+
 
 @NgModule({
   declarations: [
@@ -35,6 +37,7 @@ import { HttpModule } from '@angular/http';
     LocationTrackerProvider,
     BackgroundGeolocation,
     Geolocation,
+    BackgroundMode
   ]
 })
 export class AppModule {}
